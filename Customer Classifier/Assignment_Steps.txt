@@ -1,0 +1,80 @@
+## Candidate instructions  
+
+For the next stage of our process, your goal is to build a machine learning model that is able to answer which customers are profitable, and decide who to approve. How business works :
+- Selected customers are given cards
+- Customers make transactions depending upon their limits, credi_line
+- Company earns commission on each transaction and as interest on leftover amount 
+- If customer defaults, whole amount is lost 
+
+It is important to emphasize that there is no right answer for this question and the problem might be approached in different ways. Feel free to propose any solution you think is best.
+
+The deliverable for this stage is:
+- A 30 minute presentation of your solution
+- Code with your analysis.
+
+We are looking for people that are able to deal with complex problems with a simple, rational and creative approach.
+
+
+		-- Dataset Description --
+The puzzle dataset has 3 files :
+1. puzzle_train_dataset.csv : train dataset. This data is acquisition data. It is data that we are getting from ratings agency that compiled and sell informations about persons. Those informations are usually related to how a credit score company can calculate a score (other informations from other banks, liquidity of a person, etc...). This data is the 'state' of the customer when we asked for this data, before he was accepted as a customer in company.
+You should use those features as it is without more informations. All prices are in $ and date features might have leakage and you might just not use it to simplify your modelling.
+
+2. puzzle_test_dataset.csv : test dataset. Same as above
+
+3. big_case_train.csv : dataset with information about customer's behavior. This additional information is enough to find out which customers are profitable and make a decision about approving them as new customers. 
+
+
+You might consider the following costs and rates for your analysis.
+
+|           Metrics                       |      |
+|:---------------------------------------:|:----:|
+|          Interest by revolving          |  17% |  : commission earned as interest on leftover amount 
+|          Interchange by spend           |  5%  |  : commission earned on each transaction
+|            Card cost per unit           |  10  |
+|     Customer service cost per minute    |  2.5 |
+|           Inflation per month           | 0.5% |
+
+
+Interest by revolving: Customers have the option to pay only 10% of their bills and "revolve" the rest to the next month - e.g. Bill = $1.000, pays $1000x10% = $100, revolves $1000 - $100 = $900. His next bill will be $900x(1 + 17/100) = $900(revolving balance) + $153(monthly interest)
+
+Interchange: We charge 5% of the total amount purchased to the seller on each transaction. e.g. The customer buys a TV for $1.000, and we make $50 on the transaction
+
+Card cost per unit: The cost to manufacture and deliver a card
+
+Customer service cost per minute: Customer support
+
+Inflation: Average price increases per month.
+
+Considerations: If a customer defaulted, you can consider that the sum of total amount of spend plus revolving balance of the last month is the amount that we lost with this client. e.g. $900 + $153 (Monthly interest)
+
+
+Additional Information : 
+- big_case_train.csv : Customers use credit card each month to pay for their daily expenses. At the end of each monthly cycle, an invoice is sent with the amount of money they have to pay back.
+
+spends : This is the sum of all expenses for a customer at the end of each billing cycle. Let's say I bought this month a bike (1800$) and went to the restaurant (200$) and nothing else. At the end of the month, I'll receive an invoice of 2000$. (And we will earn 100$ out of that)
+
+revolving balance :  the leftover component of Principal amount for that specific month. Revolving balance should always be less than spend (as it is the left over of what the client didn't pay on his bill)
+
+The data that you have in big_case_train.csv is what we call behavior data, it's new data that we get every month on how the customers behave. The data in puzzle_train_dataset.csv is acquisition data (see below for explanations)
+
+credit_line: Unit is $
+
+
+Let's take an example of a customer that has the label 'default' in the first puzzle
+index 		spends 		revolving_balace
+1320072 	219 		0 -> Company makes 219*0.05 + 0*0.17 = 10.95 $
+
+1320073 	154 		1 -> Company makes 154*0.05 + 1*0.17 = 7.87 $
+
+1320074 	303 		126 -> Company makes 303*0.05 + 126*0.17 = 36.57 $
+
+1320075 	1197 		1159 -> Company makes 1197*0.05 + 1159*0.17 = 256.88
+
+1320076 	1120 		413 -> Company makes 1120*0.05 + 413*0.17 = 126.21
+
+1320077 	96 			0 -> It's the last month of data for a defaulted client, Company loses 96
+
+For this customer, Company made (counting only spends and revolving): 438.48 - 96 = 342.48 $
+
+Good Luck!

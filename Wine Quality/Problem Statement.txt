@@ -1,0 +1,2 @@
+Problem Statement:
+Given data of wine(red). The target variable is 'Quality'. When quality is greater than 5, wine is said to be a good wine else not.
